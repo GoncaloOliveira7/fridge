@@ -3,6 +3,11 @@ import React, { useState, useEffect } from 'react';
 
 const COLUMNS = [
   {
+    title: "ID",
+    dataIndex: "id",
+    key: "id",
+  },
+  {
     title: "Name",
     dataIndex: "name",
     key: "name",
