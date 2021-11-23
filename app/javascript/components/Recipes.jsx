@@ -27,15 +27,21 @@ const COLUMNS = [
     dataIndex: "difficulty",
     key: "difficulty",
   },
+  {
+    title: "Priority",
+    dataIndex: "priority",
+    key: "priority",
+  },
 ];
 
 export default () => {
   const [recipes, setRecipes] = useState([]);
   const [ingreditens, setIngreditens] = useState('');
+  // const [showAll, setshowAll] = useState('');
 
 
   const loadRecipes = () => {
-    const url = `api/v1/recipes/index?ingredients=${ingreditens.replaceAll(' ', '%20')}`;
+    const url = `api/v1/recipes/index?showall=&ingredients=${ingreditens.replaceAll(' ', '%20')}`;
     fetch(url)
       .then((data) => {
         if (data.ok) {
@@ -49,6 +55,7 @@ export default () => {
       .catch((err) => message.error("Error: " + err));
   };
 
+
   useEffect(() => {
     loadRecipes()
   }, []);
@@ -58,6 +65,7 @@ export default () => {
       <input name="filter" value={ingreditens} onChange={e => setIngreditens(e.target.value)} />
       <button onClick={loadRecipes}>Search</button>
       <button onClick={() => setIngreditens('')}>Clear</button>
+      {/* <input type="checkbox"></input> */}
       <Table className="table-striped-rows" rowKey="id" dataSource={recipes} columns={COLUMNS} pagination={{ pageSize: 100 }} />
     </>
   );

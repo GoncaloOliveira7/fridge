@@ -14,6 +14,9 @@
 
 https://dbdiagram.io/d/6192ee9702cf5d186b576ba4
 
+# Running Application
+https://my-fridge-test.herokuapp.com/
+
 ## Extras
 
 Recipes to test with [1141, 571, 1382, 1144, 2516, 1244, 619, 136, 1331]
