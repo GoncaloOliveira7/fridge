@@ -1,18 +1,13 @@
 class Api::V1::RecipesController < ApplicationController
   def index
-    show_all = true
-    ingredients = params.permit(:ingredients)['ingredients'].split(',').map { |e| "%#{ActiveRecord::Base::sanitize_sql_like(e.strip)}%" }
+    permit_params = params.permit(:ingredients, :showAll)
+
+    show_all = permit_params[:showAll] == 'true'
+    ingredients = permit_params[:ingredients].split(',').map { |e| "%#{ActiveRecord::Base::sanitize_sql_like(e.strip)}%" }
 
     if show_all
       having = 'true'
     else
-      # having = 'count(ingredients) =
-      # (SELECT count(*)
-      # FROM "recipes" post_table
-      # INNER JOIN "ingredients_recipes" ON "ingredients_recipes"."recipe_id" = "recipes"."id"
-      # INNER JOIN "ingredients" ON "ingredients"."id" = "ingredients_recipes"."ingredient_id"
-      # WHERE post_table.id = recipes.id)'
-
       having = ActiveRecord::Base::sanitize_sql_array(["count(ingredients) = count(ingredients.id) filter (where ingredients.name like any (array[:ingredients]))", ingredients: ingredients])
     end
 
@@ -29,13 +24,8 @@ class Api::V1::RecipesController < ApplicationController
         END priority
       ", ingredients: ingredients]))
       .group(:id)
-      # .having(ActiveRecord::Base::sanitize_sql_array(["count(ingredients.id) filter (where ingredients.name like any (array[:ingredients])) > 0 #{having}", ingredients: ingredients]))
       .having(having)
-      .order(priority: :asc)
-
-      # .having(having)
-    # @recipes = Recipe.joins(:ingredients).where(id: recipe_ids).group(:id)
-
+      .order(priority: :asc, name: :asc)
 
     render json: @recipes
   end
